@@ -2,30 +2,30 @@
 
 namespace App\Services;
 
+use App\Domain\DataTransferObjects\Provider2EmployeeData;
+use App\Domain\DataTransferObjects\TrackTikEmployeeData;
+
 class Provider2EmployeeMapper implements EmployeeMapperInterface
 {
     /**
      * Map Provider 2 employee data to TrackTik schema
      *
-     * @param array<string, mixed> $providerData
-     * @return array<string, mixed>
+     * @param Provider2EmployeeData $providerData
+     * @return TrackTikEmployeeData
      */
-    public function mapToTrackTik(array $providerData): array
+    public function mapToTrackTik(mixed $providerData): TrackTikEmployeeData
     {
-        $personalInfo = $providerData['personal_info'] ?? [];
-        $workInfo = $providerData['work_info'] ?? [];
-
-        return [
-            'employeeId' => $providerData['employee_number'],
-            'firstName' => $personalInfo['given_name'] ?? '',
-            'lastName' => $personalInfo['family_name'] ?? '',
-            'email' => $personalInfo['email'] ?? '',
-            'phoneNumber' => $personalInfo['mobile'] ?? null,
-            'position' => $workInfo['role'] ?? null,
-            'department' => $workInfo['division'] ?? null,
-            'startDate' => $workInfo['start_date'] ?? null,
-            'status' => $this->mapStatus($workInfo['current_status'] ?? 'active'),
-        ];
+        return new TrackTikEmployeeData(
+            employeeId: $providerData->employeeNumber,
+            firstName: $providerData->givenName,
+            lastName: $providerData->familyName,
+            email: $providerData->email,
+            status: $this->mapStatus($providerData->currentStatus),
+            phoneNumber: $providerData->mobile,
+            position: $providerData->role,
+            department: $providerData->division,
+            startDate: $providerData->startDate,
+        );
     }
 
     /**

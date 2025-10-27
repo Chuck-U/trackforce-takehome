@@ -23,8 +23,13 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->api(append: [
+            \App\Http\Middleware\LogApiRequests::class,
+        ]);
+
         $middleware->alias([
             'provider.auth' => \App\Http\Middleware\ValidateProviderToken::class,
+            'log.api' => \App\Http\Middleware\LogApiRequests::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

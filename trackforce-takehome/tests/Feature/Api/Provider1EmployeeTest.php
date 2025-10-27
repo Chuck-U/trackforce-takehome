@@ -9,7 +9,7 @@ beforeEach(function () {
     // Mock TrackTik API responses
     Http::fake(function ($request) {
         $uri = $request->url();
-        
+
         if (str_contains($uri, '/oauth/token')) {
             return Http::response([
                 'access_token' => 'fake-token',
@@ -17,13 +17,13 @@ beforeEach(function () {
                 'expires_in' => 3600,
             ], 200);
         }
-        
+
         if (str_contains($uri, '/employees')) {
             $body = json_decode($request->body(), true);
             $employeeId = $body['employeeId'] ?? uniqid();
-            
+
             $isUpdate = preg_match('/\/employees\/[^\/]+$/', $uri);
-            
+
             return Http::response([
                 'success' => true,
                 'data' => [
@@ -35,7 +35,7 @@ beforeEach(function () {
                 ],
             ], $isUpdate ? 200 : 201);
         }
-        
+
         return Http::response([], 404);
     });
 });
@@ -155,3 +155,25 @@ test('stores provider data in employee record for Provider 1', function () {
         ->and($employee->provider_data['emp_id'])->toBe('P1_006');
 });
 
+test('rejects invalid employment status', function () {
+    $employeeData = [
+        'emp_id' => 'P1_007',
+        'first_name' => 'David',
+        'last_name' => 'Lee',
+        'email_address' => 'david@provider1.com',
+        'employment_status' => 'invalid_status',
+    ];
+
+    $response = postJson('/api/provider1/employees', $employeeData);
+    
+    $response->assertStatus(400)
+        ->assertJson([
+            'success' => false,
+            'error' => [
+                'code' => 'VALIDATION_ERROR',
+            ],
+        ]);
+    
+    // Employee should not be created
+    expect(Employee::where('employee_id', 'P1_007')->exists())->toBeFalse();
+});
