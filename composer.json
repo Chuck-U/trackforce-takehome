@@ -1,0 +1,10 @@
+{
+    "require": {
+        "laravel/passport": "^13.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

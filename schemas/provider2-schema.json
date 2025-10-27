@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Provider 2 Employee Schema",
+  "type": "object",
+  "properties": {
+    "employee_number": {
+      "type": "string"
+    },
+    "personal_info": {
+      "type": "object",
+      "properties": {
+        "given_name": {
+          "type": "string"
+        },
+        "family_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "mobile": {
+          "type": "string"
+        }
+      }
+    },
+    "work_info": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string"
+        },
+        "division": {
+          "type": "string"
+        },
+        "start_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "current_status": {
+          "type": "string",
+          "enum": [
+            "employed",
+            "terminated",
+            "on_leave"
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "employee_number",
+    "personal_info",
+    "work_info"
+  ]
+}

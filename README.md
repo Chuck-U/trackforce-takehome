@@ -1,0 +1,77 @@
+# TrackTik Technical Test
+
+## Test ID: 585e1213-da80-4f33-8a90-baf07d55ab4d
+
+## Overview
+
+Welcome to the TrackTik technical assessment! We would like you to create a small API that receives employee data from two different identity providers and forwards it to TrackTik's REST API.
+
+## Requirements
+
+### Core Functionality
+1. **API Endpoints**: Create endpoints to receive employee data from two different identity providers
+2. **Data Mapping**: Map each provider's employee schema to TrackTik's employee schema
+3. **API Integration**: Forward mapped data to TrackTik's REST API
+4. **Authentication**: Implement OAuth2 authentication for TrackTik API calls
+
+### Technical Requirements
+- **Language**: PHP (any framework of your choice)
+- **Database**: Any database system you prefer
+- **Authentication**: OAuth2 implementation for TrackTik API
+- **Error Handling**: Proper error handling and logging
+- **Testing**: Unit tests with good coverage
+- **Documentation**: Clear README and API documentation
+
+## Getting Started
+
+1. **Review the schemas** in the `schemas/` directory
+2. **Check sample data** in the `sample-data/` directory
+3. **Read API documentation** in `API_DOCUMENTATION.md`
+4. **Use OAuth2 credentials** from `oauth-credentials.json`
+5. **Check submission format** in `sample-submission-payload.json`
+
+## Architecture Diagram
+
+```
+Provider 1 API → Your API → TrackTik API
+Provider 2 API → Your API → TrackTik API
+```
+
+## Submission
+
+Submit your solution by calling our submission API with the simplified payload:
+
+```bash
+curl -X POST https://cnvc2vp9q8.execute-api.us-east-2.amazonaws.com/prod/submit \
+  -H "Content-Type: application/json" \
+  -d '{
+    "testPackageId": "585e1213-da80-4f33-8a90-baf07d55ab4d",
+    "githubUrl": "https://github.com/yourusername/your-repo"
+  }'
+```
+
+**Sample Payload:** Check the `sample-submission-payload.json` file included in this package for the exact format.
+
+**Important:** You only need your testPackageId (585e1213-da80-4f33-8a90-baf07d55ab4d) and your GitHub repository URL. Your candidate information is automatically retrieved from the test package.
+
+**Submission Endpoint:** `https://cnvc2vp9q8.execute-api.us-east-2.amazonaws.com/prod/submit`
+
+## Evaluation Criteria
+
+Your solution will be evaluated on:
+- **Code Quality** (25%): Clean, readable, maintainable code
+- **Architecture** (20%): Scalable design, proper use of design patterns
+- **API Design** (20%): RESTful principles, proper error handling
+- **Security** (15%): Input validation, SQL injection prevention
+- **Testing** (10%): Test coverage and quality
+- **Documentation** (10%): Clear instructions and API docs
+
+## Time Expectation
+
+This test should take approximately 4-6 hours to complete. Focus on demonstrating your best practices and technical skills.
+
+## Questions?
+
+If you have any questions, please don't hesitate to reach out to your recruiter.
+
+Good luck! 🚀

@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Provider 1 Employee Schema",
+  "type": "object",
+  "properties": {
+    "emp_id": {
+      "type": "string"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email_address": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "dept": {
+      "type": "string"
+    },
+    "hire_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "employment_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "terminated"
+      ]
+    }
+  },
+  "required": [
+    "emp_id",
+    "first_name",
+    "last_name",
+    "email_address"
+  ]
+}
