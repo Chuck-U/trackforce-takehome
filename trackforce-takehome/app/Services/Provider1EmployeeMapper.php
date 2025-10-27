@@ -37,7 +37,7 @@ class Provider1EmployeeMapper implements EmployeeMapperInterface
             'active' => 'active',
             'inactive' => 'inactive',
             'terminated' => 'terminated',
-            default => 'active',
+            default => 'terminated',
         };
     }
 }
