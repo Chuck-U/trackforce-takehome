@@ -1,92 +1,303 @@
-# TrackTik Technical Test
+# TrackTik Employee API
 
-## Test ID: 585e1213-da80-4f33-8a90-baf07d55ab4d
+A Laravel-based REST API that receives employee data from multiple identity providers and forwards it to TrackTik's REST API with OAuth2 authentication.
 
-## Overview
+## Quick Start
 
-Welcome to the TrackTik technical assessment! We would like you to create a small API that receives employee data from two different identity providers and forwards it to TrackTik's REST API.
+### Prerequisites
+- PHP 8.2 or higher
+- Composer
+- SQLite (default) or your preferred database
 
-## Requirements
+### Installation
 
-### Core Functionality
-1. **API Endpoints**: Create endpoints to receive employee data from two different identity providers
-2. **Data Mapping**: Map each provider's employee schema to TrackTik's employee schema
-3. **API Integration**: Forward mapped data to TrackTik's REST API
-4. **Authentication**: Implement OAuth2 authentication for TrackTik API calls
+1. **Clone and navigate to the project**
+   ```bash
+   cd trackforce-takehome
+   ```
 
-### Technical Requirements
-- **Language**: PHP (any framework of your choice)
-- **Database**: Any database system you prefer
-- **Authentication**: OAuth2 implementation for TrackTik API
-- **Error Handling**: Proper error handling and logging
-- **Testing**: Unit tests with good coverage
-- **Documentation**: Clear README and API documentation
+2. **Install dependencies**
+   ```bash
+   composer install
+   ```
 
-## Getting Started
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   add values to environment for tracktik values
+   php artisan key:generate
+   ```
 
-1. **Review the schemas** in the `schemas/` directory
-2. **Check sample data** in the `sample-data/` directory
-3. **Read API documentation** in `API_DOCUMENTATION.md`
-4. **Use OAuth2 credentials** from `oauth-credentials.json`
-5. **Check submission format** in `sample-submission-payload.json`
+4. **Set up database**
+   ```bash
+   php artisan migrate
+   ```
 
-## API Documentation
+5. **Start the server**
+   ```bash
+   php artisan serve
+   ```
+   
+   API available at: `http://localhost:8000`
 
-### Interactive Swagger Documentation
-The API includes comprehensive Swagger/OpenAPI documentation. Once the application is running, access it at:
+## Configuration
 
-**Swagger UI**: `http://localhost:8000/api/documentation`
+### Environment Variables (.env)
 
-The Swagger UI provides:
-- Interactive API testing interface
-- Detailed request/response schemas for all endpoints
-- Example payloads for both Provider 1 and Provider 2
-- Real-time API testing capabilities
-
-For more details, see `SWAGGER_API_DOCS.md`
-
-## Architecture Diagram
-
+#### Application Settings
+```env
+APP_NAME=TrackTikAPI
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 ```
-Provider 1 API → Your API → TrackTik API
-Provider 2 API → Your API → TrackTik API
+
+#### Database (SQLite default)
+```env
+DB_CONNECTION=sqlite
+# Database file created at: database/database.sqlite
 ```
 
-## Submission
+For MySQL/PostgreSQL:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=trackforce
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-Submit your solution by calling our submission API with the simplified payload:
+#### TrackTik OAuth2 Configuration
+```env
+TRACKTIK_CLIENT_ID=tracktik_test_728e5c61ad2543d6
+TRACKTIK_CLIENT_SECRET=secret_4de5efe9c29941a9849278f321830e59
+TRACKTIK_TOKEN_URL=https://cnvc2vp9q8.execute-api.us-east-2.amazonaws.com/prod/oauth/token
+TRACKTIK_BASE_URL=https://cnvc2vp9q8.execute-api.us-east-2.amazonaws.com/prod/v1
+TRACKTIK_SCOPE="employees:read employees:write"
+```
 
+> **Note**: OAuth credentials are available in `oauth-credentials.json` and expire after 7 days.
+
+## API Endpoints
+
+### Base URL
+```
+http://localhost:8000/api
+```
+
+
+#### *NOTE* 
+Production environment allows for using a bearer token for other services that may handle oauth on their end. see [`routes/api.php`](routes/api.php).
+
+
+# Authentication
+All endpoints require a Bearer token:
 ```bash
-curl -X POST https://cnvc2vp9q8.execute-api.us-east-2.amazonaws.com/prod/submit \
-  -H "Content-Type: application/json" \
-  -d '{
-    "testPackageId": "585e1213-da80-4f33-8a90-baf07d55ab4d",
-    "githubUrl": "https://github.com/yourusername/your-repo"
-  }'
+Authorization: Bearer your-token-here
 ```
 
-**Sample Payload:** Check the `sample-submission-payload.json` file included in this package for the exact format.
+### Provider 1 Endpoints
+```bash
+# Create/Update Employee
+POST   /provider1/employees
 
-**Important:** You only need your testPackageId (585e1213-da80-4f33-8a90-baf07d55ab4d) and your GitHub repository URL. Your candidate information is automatically retrieved from the test package.
+# Get Employee
+GET    /provider1/employees/{employee_id}
 
-**Submission Endpoint:** `https://cnvc2vp9q8.execute-api.us-east-2.amazonaws.com/prod/submit`
+# Update Employee  
+PUT    /provider1/employees/{employee_id}
+```
 
-## Evaluation Criteria
+### Provider 2 Endpoints
+```bash
+# Create/Update Employee
+POST   /provider2/employees
 
-Your solution will be evaluated on:
-- **Code Quality** (25%): Clean, readable, maintainable code
-- **Architecture** (20%): Scalable design, proper use of design patterns
-- **API Design** (20%): RESTful principles, proper error handling
-- **Security** (15%): Input validation, SQL injection prevention
-- **Testing** (10%): Test coverage and quality
-- **Documentation** (10%): Clear instructions and API docs
+# Get Employee
+GET    /provider2/employees/{employee_id}
 
-## Time Expectation
+# Update Employee
+PUT    /provider2/employees/{employee_id}
+```
 
-This test should take approximately 4-6 hours to complete. Focus on demonstrating your best practices and technical skills.
+## API Schemas
 
-## Questions?
+### Provider 1 (Flat Structure)
+```json
+{
+  "emp_id": "EMP001",
+  "first_name": "John",
+  "last_name": "Doe",
+  "email_address": "john.doe@example.com",
+  "phone": "+1-555-0101",
+  "job_title": "Security Officer",
+  "dept": "Security",
+  "hire_date": "2024-01-15",
+  "employment_status": "active"
+}
+```
 
-If you have any questions, please don't hesitate to reach out to your recruiter.
+### Provider 2 (Nested Structure)
+```json
+{
+  "employee_number": "EMP2001",
+  "personal_info": {
+    "given_name": "Jane",
+    "family_name": "Smith",
+    "email": "jane.smith@example.com",
+    "mobile": "+1-555-0201"
+  },
+  "work_info": {
+    "role": "Security Guard",
+    "division": "Operations",
+    "start_date": "2024-02-01",
+    "current_status": "employed"
+  }
+}
+```
 
-Good luck! 🚀
+## Testing
+
+### Run All Tests
+```bash
+composer test
+```
+
+### Run Specific Test Suite
+```bash
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+```
+
+### Test Coverage
+- ✅ 63 tests with 204 assertions
+- Unit tests for mappers and services
+- Feature tests for API endpoints
+- OAuth authentication flow tests
+- Cross-schema validation tests
+
+## Interactive Documentation
+
+### Swagger UI
+Once the server is running, visit:
+```
+http://localhost:8000/api/documentation
+```
+
+Features:
+- Interactive API testing
+- Request/response examples
+- Schema definitions
+- Try-it-out functionality
+
+### Generate Swagger Docs
+```bash
+php artisan l5-swagger:generate
+```
+
+## Architecture
+
+```
+Provider 1/2 → Laravel API → OAuth2 → TrackTik API
+                    ↓
+                Database (SQLite)
+```
+
+### Key Components
+- **Controllers**: Handle HTTP requests and validation
+- **Services**: Business logic and processing
+- **Mappers**: Transform provider schemas to TrackTik format
+- **Repositories**: Database abstraction layer
+- **Middleware**: Authentication, logging, security
+
+## Development
+
+### Composer Scripts
+```bash
+composer setup      # Full setup (install, copy env, key, migrate)
+composer dev        # Start development server
+composer test       # Run tests
+composer lint       # Code style check
+composer format     # Auto-format code
+```
+
+### Code Quality
+- PSR-12 coding standard
+- Laravel Pint for formatting
+- Pest for testing
+- Comprehensive error handling
+
+## Security
+
+- ✅ OAuth2 authentication for TrackTik API
+- ✅ Bearer token authentication for endpoints
+- ✅ Input validation and sanitization
+- ✅ SQL injection prevention (Eloquent ORM)
+- ✅ Escape character detection
+- ✅ Rate limiting ready
+
+## Troubleshooting
+
+### Database Issues
+```bash
+# Reset database
+php artisan migrate:fresh
+
+# Check database connection
+php artisan tinker
+>>> DB::connection()->getPdo()
+```
+
+### Permission Issues
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
+### Clear Caches
+```bash
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+```
+
+## Project Structure
+
+```
+trackforce-takehome/
+├── app/
+│   ├── Contracts/           # Interfaces
+│   ├── Domain/             # DTOs and domain logic
+│   ├── Http/
+│   │   ├── Controllers/    # API controllers
+│   │   ├── Middleware/     # Custom middleware
+│   │   └── Requests/       # Form requests
+│   ├── Models/             # Eloquent models
+│   ├── Repositories/       # Data access layer
+│   └── Services/           # Business logic
+├── config/                 # Configuration files
+├── database/
+│   ├── migrations/         # Database migrations
+│   └── factories/          # Test factories
+├── routes/
+│   └── api.php            # API routes
+├── tests/
+│   ├── Feature/           # Integration tests
+│   └── Unit/              # Unit tests
+├── .env                   # Environment config
+└── composer.json          # Dependencies
+```
+
+## Documentation
+
+- `API_DOCUMENTATION.md` - TrackTik API reference
+- `IMPLEMENTATION.md` - Implementation details
+- `TESTING_QUICK_REFERENCE.md` - Testing guide
+- `schemas/` - JSON schemas for both providers
+- `sample-data/` - Example payloads
+
+
+
+---
+
+**Test ID**: `585e1213-da80-4f33-8a90-baf07d55ab4d`
