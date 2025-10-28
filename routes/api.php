@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\Provider;
-use App\Http\Controllers\Api\Provider2EmployeeController;
 use App\Http\Controllers\Api\EmployeeController;
 use Illuminate\Support\Facades\Route;
 

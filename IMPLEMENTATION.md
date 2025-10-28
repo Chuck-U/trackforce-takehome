@@ -325,7 +325,7 @@ curl -X POST http://localhost/api/provider2/employees \
 
 ### Setup
 ```bash
-cd trackforce-takehome/trackforce-takehome
+cd trackforce-takehome
 composer install
 php artisan migrate
 ```
