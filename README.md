@@ -22,7 +22,39 @@ Welcome to the TrackTik technical assessment! We would like you to create a smal
 - **Testing**: Unit tests with good coverage
 - **Documentation**: Clear README and API documentation
 
-## Getting Started
+## Installation & Setup
+
+This is a **backend-only API application** built with Laravel. No frontend or React components are included.
+
+### Prerequisites
+- PHP 8.2 or higher
+- Composer
+- SQLite (or your preferred database)
+
+### Setup Instructions
+
+1. **Navigate to the application directory**
+   ```bash
+   cd trackforce-takehome
+   ```
+
+2. **Run the setup script**
+   ```bash
+   composer setup
+   ```
+   This will:
+   - Install dependencies
+   - Copy `.env.example` to `.env`
+   - Generate application key
+   - Run database migrations
+
+3. **Start the development server**
+   ```bash
+   composer dev
+   ```
+   The API will be available at `http://localhost:8000`
+
+### Getting Started
 
 1. **Review the schemas** in the `schemas/` directory
 2. **Check sample data** in the `sample-data/` directory

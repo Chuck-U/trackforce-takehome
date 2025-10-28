@@ -1,19 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use Laravel\Fortify\Features;
+
+// This is a backend API-only application
+// All API routes are defined in routes/api.php
 
 Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
+    return response()->json([
+        'message' => 'TrackTik Technical Test API',
+        'documentation' => url('/api/documentation'),
+        'version' => '1.0.0'
     ]);
-})->name('home');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
 });
-
-require __DIR__.'/settings.php';
