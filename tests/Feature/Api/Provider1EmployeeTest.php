@@ -224,3 +224,65 @@ test('authenticates with OAuth before calling TrackTik API', function () {
                str_contains($request->header('Authorization')[0] ?? '', 'Bearer fake-access-token');
     });
 });
+
+test('rejects Provider 2 schema on Provider 1 endpoint', function () {
+    // Attempting to use Provider 2 schema structure on Provider 1 endpoint
+    $provider2Data = [
+        'employee_number' => 'P2_WRONG',
+        'personal_info' => [
+            'given_name' => 'John',
+            'family_name' => 'Doe',
+            'email' => 'john.doe@example.com',
+            'mobile' => '+1-555-9999',
+        ],
+        'work_info' => [
+            'role' => 'Security Guard',
+            'division' => 'Operations',
+            'start_date' => '2024-01-15',
+            'current_status' => 'employed',
+        ],
+    ];
+
+    $response = postJson('/api/provider1/employees', $provider2Data, authHeaders());
+
+    $response->assertStatus(400)
+        ->assertJson([
+            'success' => false,
+            'error' => [
+                'code' => 'VALIDATION_ERROR',
+                'message' => 'Invalid employee data',
+            ],
+        ]);
+
+    // Verify the error details mention missing required Provider 1 fields
+    $responseData = $response->json();
+    expect($responseData['error']['details'])->toBeArray();
+    
+    $fieldNames = collect($responseData['error']['details'])->pluck('field')->toArray();
+    expect($fieldNames)->toContain('emp_id')
+        ->and($fieldNames)->toContain('first_name')
+        ->and($fieldNames)->toContain('last_name')
+        ->and($fieldNames)->toContain('email_address');
+
+    // Employee should not be created
+    expect(Employee::where('employee_id', 'P2_WRONG')->exists())->toBeFalse();
+});
+
+test('rejects partial Provider 2 schema with some Provider 1 fields', function () {
+    // Mixed schema - has some Provider 1 fields but also Provider 2 nested structure
+    $mixedData = [
+        'emp_id' => 'P1_MIXED',
+        'first_name' => 'Jane',
+        'personal_info' => [
+            'email' => 'jane@example.com',
+        ],
+    ];
+
+    $response = postJson('/api/provider1/employees', $mixedData, authHeaders());
+
+    $response->assertStatus(400)
+        ->assertJsonPath('error.code', 'VALIDATION_ERROR');
+
+    // Employee should not be created
+    expect(Employee::where('employee_id', 'P1_MIXED')->exists())->toBeFalse();
+});
