@@ -2,6 +2,7 @@
 
 namespace App\Http\Responses;
 
+use App\Domain\DataTransferObjects\TrackTikResponse;
 use Illuminate\Http\JsonResponse;
 
 class ApiResponseFactory
@@ -34,6 +35,29 @@ class ApiResponseFactory
             'success' => false,
             'error' => $error,
         ], $statusCode);
+    }
+
+    /**
+     * Create a response from TrackTikResponse object
+     *
+     * @param TrackTikResponse $response
+     * @param int $successStatusCode
+     * @param int $errorStatusCode
+     * @return JsonResponse
+     */
+    public static function fromTrackTikResponse(
+        TrackTikResponse $response,
+        int $successStatusCode = 200,
+        int $errorStatusCode = 500
+    ): JsonResponse {
+        if ($response->success) {
+            return self::success($response->data, $successStatusCode);
+        }
+
+        return self::error([
+            'code' => 'TRACKTIK_ERROR',
+            'message' => $response->error,
+        ], $errorStatusCode);
     }
 
     /**

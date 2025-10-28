@@ -27,6 +27,12 @@ class OAuth2TokenManager
     public function getAccessToken(): string
     {
         return Cache::remember(self::CACHE_KEY, self::TTL_DEFAULT_TIME, function () {
+            Log::info('Requesting new OAuth2 access token from TrackTik', [
+                'token_url' => $this->tokenUrl,
+                'client_id' => $this->clientId,
+                'scope' => $this->scope,
+            ]);
+
             $response = Http::asForm()->post($this->tokenUrl, [
                 'grant_type' => 'client_credentials',
                 'client_id' => $this->clientId,
@@ -38,11 +44,17 @@ class OAuth2TokenManager
                 Log::error('Failed to obtain TrackTik access token', [
                     'status' => $response->status(),
                     'body' => $response->body(),
+                    'token_url' => $this->tokenUrl,
                 ]);
                 throw new \Exception('Failed to authenticate with TrackTik API');
             }
 
             $data = $response->json();
+            
+            Log::info('Successfully obtained OAuth2 access token', [
+                'expires_in' => $data['expires_in'] ?? 'unknown',
+            ]);
+            
             return $data['access_token'];
         });
     }

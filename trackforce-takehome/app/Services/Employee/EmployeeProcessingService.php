@@ -5,6 +5,7 @@ namespace App\Services\Employee;
 use App\Contracts\EmployeeRepositoryInterface;
 use App\Contracts\TrackTikServiceInterface;
 use App\Domain\DataTransferObjects\TrackTikEmployeeData;
+use App\Domain\DataTransferObjects\TrackTikResponse;
 use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +24,7 @@ class EmployeeProcessingService
      * @param string $employeeId
      * @param TrackTikEmployeeData $trackTikData
      * @param array $employeeData
-     * @return array{success: bool, data?: array, error?: array}
+     * @return array{response: TrackTikResponse, isUpdate: bool}
      */
     public function processEmployee(
         string $provider,
@@ -48,11 +49,8 @@ class EmployeeProcessingService
 
             if (!$trackTikResponse->success) {
                 return [
-                    'success' => false,
-                    'error' => [
-                        'code' => 'TRACKTIK_ERROR',
-                        'message' => $trackTikResponse->error,
-                    ],
+                    'response' => TrackTikResponse::error($trackTikResponse->error ?? 'TrackTik API error'),
+                    'isUpdate' => $isUpdate,
                 ];
             }
 
@@ -72,16 +70,55 @@ class EmployeeProcessingService
             ]);
 
             return [
-                'success' => true,
-                'data' => [
+                'response' => TrackTikResponse::success([
                     'id' => $employee->id,
                     'employeeId' => $employee->employee_id,
                     'provider' => $employee->provider,
                     'tracktikId' => $employee->tracktik_id,
                     'message' => $isUpdate ? 'Employee updated successfully' : 'Employee created successfully',
-                ],
+                ]),
                 'isUpdate' => $isUpdate,
             ];
         });
+    }
+
+    /**
+     * Retrieve employee data (local and optionally TrackTik)
+     *
+     * @param string $provider
+     * @param string $employeeId
+     * @return TrackTikResponse
+     */
+    public function getEmployee(string $provider, string $employeeId): TrackTikResponse
+    {
+        try {
+            $employee = $this->employeeRepository->findByProviderAndId($provider, $employeeId);
+            if (!$employee) {
+                return TrackTikResponse::error('Employee not found');
+            }
+
+            $tracktikData = null;
+            if (!empty($employee->tracktik_id)) {
+                $trackTikResponse = $this->trackTikService->getEmployee($employee->tracktik_id);
+                if ($trackTikResponse->success) {
+                    $tracktikData = $trackTikResponse->data;
+                }
+            }
+
+            return TrackTikResponse::success([
+                'id' => $employee->id,
+                'employeeId' => $employee->employee_id,
+                'provider' => $employee->provider,
+                'tracktikId' => $employee->tracktik_id,
+                'tracktik' => $tracktikData,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error retrieving employee', [
+                'provider' => $provider,
+                'employeeId' => $employeeId,
+                'message' => $e->getMessage(),
+            ]);
+            return TrackTikResponse::error('Unable to retrieve employee');
+        }
     }
 }

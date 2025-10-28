@@ -12,6 +12,508 @@
         }
     ],
     "paths": {
+        "/{provider}/employees/{employee_id}": {
+            "get": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Get employee by provider and employee ID",
+                "operationId": "3468174832e6ed68e326d58879a372d8",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Provider identifier (e.g., provider1, provider2)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "provider1"
+                        }
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "Provider-specific employee ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "EMP001"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider1"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-12345",
+                                                    "nullable": true
+                                                },
+                                                "tracktik": {
+                                                    "type": "object",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "NOT_FOUND"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee not found"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid provider",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "INVALID_PROVIDER"
+                                                },
+                                                "message": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Update an employee for given provider",
+                "operationId": "7a6c2c7a7d87e08fde7c947d3efe551e",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Provider identifier (e.g., provider1, provider2)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "provider1"
+                        }
+                    },
+                    {
+                        "name": "employee_id",
+                        "in": "path",
+                        "description": "Provider-specific employee ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "EMP001"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Employee information in the TrackTik employee schema",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "emp_id",
+                                    "first_name",
+                                    "last_name",
+                                    "email_address",
+                                    "phone",
+                                    "job_title",
+                                    "dept",
+                                    "hire_date",
+                                    "employment_status"
+                                ],
+                                "properties": {
+                                    "emp_id": {
+                                        "type": "string",
+                                        "example": "EMP001"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "Alice"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Smith"
+                                    },
+                                    "email_address": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "alice.smith@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+14255550101"
+                                    },
+                                    "job_title": {
+                                        "type": "string",
+                                        "example": "Security Officer"
+                                    },
+                                    "dept": {
+                                        "type": "string",
+                                        "example": "Operations"
+                                    },
+                                    "hire_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-01"
+                                    },
+                                    "employment_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive",
+                                            "terminated"
+                                        ],
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider1"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-12345"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee updated successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Employee not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "NOT_FOUND"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee not found"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error, invalid provider, or mismatched employee ID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{provider}/employees": {
+            "post": {
+                "tags": [
+                    "Employees"
+                ],
+                "summary": "Create an employee for given provider",
+                "operationId": "7001e7a8db2a893721e72ecf668cdf9e",
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "description": "Provider identifier (e.g., provider1, provider2)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "provider1"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Employee information in the TrackTik employee schema",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "emp_id",
+                                    "first_name",
+                                    "last_name",
+                                    "email_address",
+                                    "phone",
+                                    "job_title",
+                                    "dept",
+                                    "hire_date",
+                                    "employment_status"
+                                ],
+                                "properties": {
+                                    "emp_id": {
+                                        "type": "string",
+                                        "example": "EMP001"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "Alice"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Smith"
+                                    },
+                                    "email_address": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "alice.smith@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+14255550101"
+                                    },
+                                    "job_title": {
+                                        "type": "string",
+                                        "example": "Security Officer"
+                                    },
+                                    "dept": {
+                                        "type": "string",
+                                        "example": "Operations"
+                                    },
+                                    "hire_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-01-01"
+                                    },
+                                    "employment_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive",
+                                            "terminated"
+                                        ],
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Employee created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider1"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-12345"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee created successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Employee updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP001"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee updated successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error or invalid provider",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/provider1/employees": {
             "post": {
                 "tags": [
@@ -496,6 +998,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Employees",
+            "description": "Route for CRUD operations on employees"
+        },
         {
             "name": "Provider 1",
             "description": "Employee data endpoints for Provider 1"

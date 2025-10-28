@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         cacheDirectory="storage/cache/phpunit"
+    xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    colors="true"
+    cacheDirectory="storage/cache/phpunit"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -23,30 +23,17 @@
             <file>app/Providers/AppServiceProvider.php</file>
         </exclude>
     </source>
-    <coverage
-        includeUncoveredFiles="true"
-        pathCoverage="false"
-        ignoreDeprecatedCodeUnits="true"
-        disableCodeCoverageIgnore="false"
-    >
-        <report>
-            <html outputDirectory="storage/coverage/html" lowUpperBound="50" highLowerBound="80"/>
-            <clover outputFile="storage/coverage/clover.xml"/>
-            <text outputFile="storage/coverage/coverage.txt" showUncoveredFiles="true" showOnlySummary="false"/>
-            <xml outputDirectory="storage/coverage/xml"/>
-        </report>
-    </coverage>
     <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_MAINTENANCE_DRIVER" value="file"/>
-        <env name="BCRYPT_ROUNDS" value="4"/>
-        <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
-        <env name="MAIL_MAILER" value="array"/>
-        <env name="PULSE_ENABLED" value="false"/>
-        <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="APP_ENV" value="testing" />
+        <env name="APP_MAINTENANCE_DRIVER" value="file" />
+        <env name="BCRYPT_ROUNDS" value="4" />
+        <env name="CACHE_STORE" value="array" />
+        <env name="DB_CONNECTION" value="sqlite" />
+        <env name="DB_DATABASE" value=":memory:" />
+        <env name="MAIL_MAILER" value="array" />
+        <env name="PULSE_ENABLED" value="false" />
+        <env name="QUEUE_CONNECTION" value="sync" />
+        <env name="SESSION_DRIVER" value="array" />
+        <env name="TELESCOPE_ENABLED" value="false" />
     </php>
 </phpunit>

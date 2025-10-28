@@ -4,21 +4,42 @@ use App\Models\Employee;
 use App\Services\TrackTikService;
 use Illuminate\Support\Facades\Http;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\getJson;
+use function Pest\Laravel\putJson;
+
+// Helper function to get auth headers
+function authHeaders2(): array {
+    return ['Authorization' => 'Bearer test-provider-token-12345'];
+}
 
 beforeEach(function () {
-    // Mock TrackTik API responses
+    // Mock TrackTik API responses with OAuth authentication flow
     Http::fake(function ($request) {
         $uri = $request->url();
         
+        // OAuth2 token endpoint - must be called before any TrackTik API call
         if (str_contains($uri, '/oauth/token')) {
             return Http::response([
-                'access_token' => 'fake-token',
+                'access_token' => 'fake-access-token-12345',
                 'token_type' => 'Bearer',
                 'expires_in' => 3600,
+                'scope' => 'employees:read employees:write',
             ], 200);
         }
         
+        // Employee endpoints - require Bearer token authentication
         if (str_contains($uri, '/employees')) {
+            // Verify that the request has a valid Bearer token
+            $authHeader = $request->header('Authorization');
+            if (!$authHeader || !str_contains($authHeader[0], 'Bearer fake-access-token')) {
+                return Http::response([
+                    'error' => [
+                        'code' => 'UNAUTHORIZED',
+                        'message' => 'Invalid or missing authentication token',
+                    ],
+                ], 401);
+            }
+
             $body = json_decode($request->body(), true);
             $employeeId = $body['employeeId'] ?? uniqid();
             
@@ -57,7 +78,7 @@ test('can create employee with valid Provider 2 data', function () {
         ],
     ];
 
-    $response = postJson('/api/provider2/employees', $employeeData);
+    $response = postJson('/api/provider2/employees', $employeeData, authHeaders2());
 
     $response->assertStatus(201)
         ->assertJson([
@@ -97,7 +118,7 @@ test('can update existing Provider 2 employee', function () {
         ],
     ];
 
-    $response = postJson('/api/provider2/employees', $employeeData);
+    $response = postJson('/api/provider2/employees', $employeeData, authHeaders2());
 
     $response->assertStatus(200)
         ->assertJson([
@@ -112,7 +133,7 @@ test('validates required fields for Provider 2', function () {
     $response = postJson('/api/provider2/employees', [
         'employee_number' => 'P2_003',
         // Missing required fields
-    ]);
+    ], authHeaders2());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -135,7 +156,7 @@ test('validates email format for Provider 2', function () {
         'work_info' => [
             'current_status' => 'employed',
         ],
-    ]);
+    ], authHeaders2());
 
     $response->assertStatus(400)
         ->assertJsonPath('error.code', 'VALIDATION_ERROR');
@@ -152,7 +173,7 @@ test('validates current status enum for Provider 2', function () {
         'work_info' => [
             'current_status' => 'invalid_status',
         ],
-    ]);
+    ], authHeaders2());
 
     $response->assertStatus(400)
         ->assertJsonPath('error.code', 'VALIDATION_ERROR');
@@ -182,7 +203,7 @@ test('correctly maps Provider 2 status to system status', function () {
             ],
         ];
 
-        $response = postJson('/api/provider2/employees', $employeeData);
+        $response = postJson('/api/provider2/employees', $employeeData, authHeaders2());
         $response->assertSuccessful();
 
         $employee = Employee::where('employee_id', "P2_STATUS_{$index}")->first();
@@ -204,10 +225,42 @@ test('stores provider data in employee record for Provider 2', function () {
         ],
     ];
 
-    postJson('/api/provider2/employees', $employeeData);
+    postJson('/api/provider2/employees', $employeeData, authHeaders2());
 
     $employee = Employee::where('employee_id', 'P2_006')->first();
     expect($employee->provider_data)->toBeArray()
         ->and($employee->provider_data['employee_number'])->toBe('P2_006');
 });
 
+test('authenticates with OAuth before calling TrackTik API', function () {
+    $employeeData = [
+        'employee_number' => 'P2_007',
+        'personal_info' => [
+            'given_name' => 'Frank',
+            'family_name' => 'Garcia',
+            'email' => 'frank.garcia@provider2.com',
+            'mobile' => '+1-555-0207',
+        ],
+        'work_info' => [
+            'role' => 'Supervisor',
+            'division' => 'Security Operations',
+            'current_status' => 'employed',
+        ],
+    ];
+
+    $response = postJson('/api/provider2/employees', $employeeData, authHeaders2());
+
+    $response->assertStatus(201);
+
+    // Verify OAuth token endpoint was called
+    Http::assertSent(function ($request) {
+        return str_contains($request->url(), '/oauth/token') &&
+               $request['grant_type'] === 'client_credentials';
+    });
+
+    // Verify employee endpoint was called with Bearer token
+    Http::assertSent(function ($request) {
+        return str_contains($request->url(), '/employees') &&
+               str_contains($request->header('Authorization')[0] ?? '', 'Bearer fake-access-token');
+    });
+});

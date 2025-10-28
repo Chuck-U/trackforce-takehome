@@ -15,6 +15,31 @@ class TrackTikApiClient
     ) {}
 
     /**
+     * Authenticate with TrackTik OAuth2 service
+     * 
+     * @return string Access token
+     * @throws \Exception
+     */
+    private function authenticate(): string
+    {
+        Log::info('Authenticating with TrackTik OAuth2 service');
+        
+        try {
+            $token = $this->tokenManager->getAccessToken();
+            
+            Log::info('Successfully authenticated with TrackTik OAuth2');
+            
+            return $token;
+        } catch (\Exception $e) {
+            Log::error('Failed to authenticate with TrackTik OAuth2', [
+                'message' => $e->getMessage(),
+            ]);
+            
+            throw new \Exception('OAuth2 authentication failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Make authenticated POST request to TrackTik API
      *
      * @param string $endpoint
@@ -24,7 +49,13 @@ class TrackTikApiClient
     public function post(string $endpoint, array $data): TrackTikResponse
     {
         try {
-            $token = $this->tokenManager->getAccessToken();
+            // Explicitly authenticate with OAuth2 before making the request
+            $token = $this->authenticate();
+            
+            Log::info('Making authenticated POST request to TrackTik', [
+                'endpoint' => $endpoint,
+            ]);
+            
             $response = Http::withToken($token)->post("{$this->baseUrl}{$endpoint}", $data);
 
             return $this->handleResponse($response, 'POST', $endpoint, $data);
@@ -49,7 +80,13 @@ class TrackTikApiClient
     public function put(string $endpoint, array $data): TrackTikResponse
     {
         try {
-            $token = $this->tokenManager->getAccessToken();
+            // Explicitly authenticate with OAuth2 before making the request
+            $token = $this->authenticate();
+            
+            Log::info('Making authenticated PUT request to TrackTik', [
+                'endpoint' => $endpoint,
+            ]);
+            
             $response = Http::withToken($token)->put("{$this->baseUrl}{$endpoint}", $data);
 
             return $this->handleResponse($response, 'PUT', $endpoint, $data);
@@ -73,7 +110,13 @@ class TrackTikApiClient
     public function get(string $endpoint): TrackTikResponse
     {
         try {
-            $token = $this->tokenManager->getAccessToken();
+            // Explicitly authenticate with OAuth2 before making the request
+            $token = $this->authenticate();
+            
+            Log::info('Making authenticated GET request to TrackTik', [
+                'endpoint' => $endpoint,
+            ]);
+            
             $response = Http::withToken($token)->get("{$this->baseUrl}{$endpoint}");
 
             return $this->handleResponse($response, 'GET', $endpoint);

@@ -16,6 +16,7 @@ use App\Services\Provider1EmployeeMapper;
 use App\Services\Provider2EmployeeMapper;
 use App\Services\TrackTik\TrackTikApiClient;
 use App\Services\TrackTikService;
+use App\Services\Provider\ProviderResolver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -48,6 +49,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(TrackTikServiceInterface::class, TrackTikService::class);
+
+        // Provider resolver
+        $this->app->singleton(ProviderResolver::class, function () {
+            return new ProviderResolver();
+        });
 
         // Status mapper bindings with contextual binding
         $this->app->when(Provider1EmployeeMapper::class)

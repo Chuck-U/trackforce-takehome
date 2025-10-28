@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Http;
 use function Pest\Laravel\postJson;
 
+// Helper function to get auth headers for escape test
+function escapeTestAuthHeaders(): array {
+    return ['Authorization' => 'Bearer test-provider-token-12345'];
+}
+
 beforeEach(function () {
     // Mock TrackTik API responses for tests
     Http::fake(function ($request) {
@@ -40,7 +45,7 @@ test('valid input passes middleware on provider1', function () {
         'last_name' => 'Doe',
         'email_address' => 'john.doe@example.com',
         'status' => 'active'
-    ]);
+    ], escapeTestAuthHeaders());
 
     // Should not get a 400 error from escape character check
     expect($response->status())->not->toBe(400);
@@ -53,7 +58,7 @@ test('backslash escape character is detected in provider1', function () {
         'last_name' => 'Doe',
         'email_address' => 'john.doe@example.com',
         'status' => 'active'
-    ]);
+    ], escapeTestAuthHeaders());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -71,7 +76,7 @@ test('literal newline escape sequence is detected', function () {
         'last_name' => 'Doe\\n',
         'email_address' => 'john.doe@example.com',
         'status' => 'active'
-    ]);
+    ], escapeTestAuthHeaders());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -87,7 +92,7 @@ test('literal tab escape sequence is detected', function () {
         'last_name' => 'Doe',
         'email_address' => 'john\\t@example.com',
         'status' => 'active'
-    ]);
+    ], escapeTestAuthHeaders());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -109,7 +114,7 @@ test('escape characters in nested objects are detected in provider2', function (
             'start_date' => '2024-01-01',
             'current_status' => 'employed'
         ]
-    ]);
+    ], escapeTestAuthHeaders());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -125,7 +130,7 @@ test('control characters are detected', function () {
         'last_name' => 'Doe',
         'email_address' => 'john.doe@example.com',
         'status' => 'active'
-    ]);
+    ], escapeTestAuthHeaders());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -147,7 +152,7 @@ test('middleware works on provider2 routes', function () {
             'start_date' => '2024-01-01',
             'current_status' => 'employed'
         ]
-    ]);
+    ], escapeTestAuthHeaders());
 
     $response->assertStatus(400)
         ->assertJson([
@@ -169,7 +174,7 @@ test('valid provider2 input passes middleware', function () {
             'start_date' => '2024-01-01',
             'current_status' => 'employed'
         ]
-    ]);
+    ], escapeTestAuthHeaders());
 
     // Should not get a 400 error from escape character check
     expect($response->status())->not->toBe(400);

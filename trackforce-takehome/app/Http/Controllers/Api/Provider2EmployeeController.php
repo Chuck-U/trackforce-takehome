@@ -186,11 +186,10 @@ class Provider2EmployeeController extends Controller
                 $employeeData
             );
 
-            if (!$result['success']) {
-                return ApiResponseFactory::trackTikError($result['error']['message']);
-            }
-
-            return ApiResponseFactory::success($result['data'], $result['isUpdate'] ? 200 : 201);
+            return ApiResponseFactory::fromTrackTikResponse(
+                $result['response'],
+                $result['isUpdate'] ? 200 : 201
+            );
         } catch (\Exception $e) {
             Log::error('Error processing Provider 2 employee', [
                 'message' => $e->getMessage(),
