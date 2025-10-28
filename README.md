@@ -30,6 +30,21 @@ Welcome to the TrackTik technical assessment! We would like you to create a smal
 4. **Use OAuth2 credentials** from `oauth-credentials.json`
 5. **Check submission format** in `sample-submission-payload.json`
 
+## API Documentation
+
+### Interactive Swagger Documentation
+The API includes comprehensive Swagger/OpenAPI documentation. Once the application is running, access it at:
+
+**Swagger UI**: `http://localhost:8000/api/documentation`
+
+The Swagger UI provides:
+- Interactive API testing interface
+- Detailed request/response schemas for all endpoints
+- Example payloads for both Provider 1 and Provider 2
+- Real-time API testing capabilities
+
+For more details, see `SWAGGER_API_DOCS.md`
+
 ## Architecture Diagram
 
 ```

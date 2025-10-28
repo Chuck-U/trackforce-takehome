@@ -1,0 +1,508 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TrackForce Employee Integration API",
+        "description": "API for integrating employee data from external providers into TrackTik",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/provider1/employees": {
+            "post": {
+                "tags": [
+                    "Provider 1"
+                ],
+                "summary": "Create or update an employee from Provider 1",
+                "description": "Create or update employee from Provider 1",
+                "operationId": "6f3b8fe788812decde6e955582f75aab",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "emp_id",
+                                    "first_name",
+                                    "last_name",
+                                    "email_address"
+                                ],
+                                "properties": {
+                                    "emp_id": {
+                                        "type": "string",
+                                        "example": "EMP001"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email_address": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "555-1234",
+                                        "nullable": true
+                                    },
+                                    "job_title": {
+                                        "type": "string",
+                                        "example": "Security Officer",
+                                        "nullable": true
+                                    },
+                                    "dept": {
+                                        "type": "string",
+                                        "example": "Security",
+                                        "nullable": true
+                                    },
+                                    "hire_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-01-15",
+                                        "nullable": true
+                                    },
+                                    "employment_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive",
+                                            "terminated"
+                                        ],
+                                        "example": "active",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Employee created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider1"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-12345"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee created successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Employee updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider1"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-12345"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee updated successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "VALIDATION_ERROR"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid employee data"
+                                                },
+                                                "details": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "field": {
+                                                                "type": "string"
+                                                            },
+                                                            "message": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "INTERNAL_ERROR"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "An error occurred while processing the employee data"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/provider2/employees": {
+            "post": {
+                "tags": [
+                    "Provider 2"
+                ],
+                "summary": "Create or update an employee from Provider 2",
+                "description": "Create or update employee from Provider 2",
+                "operationId": "8c1d41a1f1230ca4a4a1673c752a39cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "employee_number",
+                                    "personal_info",
+                                    "work_info"
+                                ],
+                                "properties": {
+                                    "employee_number": {
+                                        "type": "string",
+                                        "example": "EMP2001"
+                                    },
+                                    "personal_info": {
+                                        "properties": {
+                                            "given_name": {
+                                                "type": "string",
+                                                "example": "Jane"
+                                            },
+                                            "family_name": {
+                                                "type": "string",
+                                                "example": "Smith"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "jane.smith@example.com"
+                                            },
+                                            "mobile": {
+                                                "type": "string",
+                                                "example": "555-5678",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "work_info": {
+                                        "properties": {
+                                            "role": {
+                                                "type": "string",
+                                                "example": "Security Guard",
+                                                "nullable": true
+                                            },
+                                            "division": {
+                                                "type": "string",
+                                                "example": "Operations",
+                                                "nullable": true
+                                            },
+                                            "start_date": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2024-02-01",
+                                                "nullable": true
+                                            },
+                                            "current_status": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "employed",
+                                                    "terminated",
+                                                    "on_leave"
+                                                ],
+                                                "example": "employed",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Employee created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP2001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider2"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-67890"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee created successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Employee updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "employeeId": {
+                                                    "type": "string",
+                                                    "example": "EMP2001"
+                                                },
+                                                "provider": {
+                                                    "type": "string",
+                                                    "example": "provider2"
+                                                },
+                                                "tracktikId": {
+                                                    "type": "string",
+                                                    "example": "tt-67890"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Employee updated successfully"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "VALIDATION_ERROR"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid employee data"
+                                                },
+                                                "details": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "field": {
+                                                                "type": "string"
+                                                            },
+                                                            "message": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "INTERNAL_ERROR"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "An error occurred while processing the employee data"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Provider 1",
+            "description": "Employee data endpoints for Provider 1"
+        },
+        {
+            "name": "Provider 2",
+            "description": "Employee data endpoints for Provider 2"
+        }
+    ]
+}
