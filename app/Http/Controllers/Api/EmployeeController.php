@@ -155,22 +155,96 @@ class EmployeeController extends Controller
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            description: "Employee information in the TrackTik employee schema",
-            content: new OA\JsonContent(
-                required: ["emp_id", "first_name", "last_name", "email_address", "phone", "job_title", "dept", "hire_date", "employment_status"],
-                properties: [
-                    new OA\Property(property: "emp_id", type: "string", example: "EMP001"),
-                    new OA\Property(property: "first_name", type: "string", example: "Alice"),
-                    new OA\Property(property: "last_name", type: "string", example: "Smith"),
-                    new OA\Property(property: "email_address", type: "string", format: "email", example: "alice.smith@example.com"),
-                    new OA\Property(property: "phone", type: "string", example: "+14255550101"),
-                    new OA\Property(property: "job_title", type: "string", example: "Security Officer"),
-                    new OA\Property(property: "dept", type: "string", example: "Operations"),
-                    new OA\Property(property: "hire_date", type: "string", format: "date", example: "2025-01-01"),
-                    new OA\Property(property: "employment_status", type: "string", enum: ["active", "inactive", "terminated"], example: "active")
-                ],
-                type: "object"
-            )
+            description: "Employee data - schema varies by provider. Provider 1 uses flat structure, Provider 2 uses nested structure.",
+            content: [
+                "application/json" => new OA\MediaType(
+                    mediaType: "application/json",
+                    examples: [
+                        "provider1" => new OA\Examples(
+                            example: "provider1",
+                            summary: "Provider 1 Schema (Flat Structure)",
+                            value: [
+                                "emp_id" => "EMP001",
+                                "first_name" => "John",
+                                "last_name" => "Doe",
+                                "email_address" => "john.doe@example.com",
+                                "phone" => "+1-555-0101",
+                                "job_title" => "Security Officer",
+                                "dept" => "Security Operations",
+                                "hire_date" => "2024-01-15",
+                                "employment_status" => "active"
+                            ]
+                        ),
+                        "provider2" => new OA\Examples(
+                            example: "provider2",
+                            summary: "Provider 2 Schema (Nested Structure)",
+                            value: [
+                                "employee_number" => "EMP2001",
+                                "personal_info" => [
+                                    "given_name" => "Jane",
+                                    "family_name" => "Smith",
+                                    "email" => "jane.smith@example.com",
+                                    "mobile" => "+1-555-0201"
+                                ],
+                                "work_info" => [
+                                    "role" => "Security Guard",
+                                    "division" => "Operations",
+                                    "start_date" => "2024-02-01",
+                                    "current_status" => "employed"
+                                ]
+                            ]
+                        )
+                    ],
+                    schema: new OA\Schema(
+                        type: "object",
+                        oneOf: [
+                            new OA\Schema(
+                                title: "Provider1Schema",
+                                required: ["emp_id", "first_name", "last_name", "email_address"],
+                                properties: [
+                                    new OA\Property(property: "emp_id", type: "string", description: "Employee ID"),
+                                    new OA\Property(property: "first_name", type: "string", description: "First name"),
+                                    new OA\Property(property: "last_name", type: "string", description: "Last name"),
+                                    new OA\Property(property: "email_address", type: "string", format: "email", description: "Email address"),
+                                    new OA\Property(property: "phone", type: "string", nullable: true, description: "Phone number"),
+                                    new OA\Property(property: "job_title", type: "string", nullable: true, description: "Job title"),
+                                    new OA\Property(property: "dept", type: "string", nullable: true, description: "Department"),
+                                    new OA\Property(property: "hire_date", type: "string", format: "date", nullable: true, description: "Hire date"),
+                                    new OA\Property(property: "employment_status", type: "string", enum: ["active", "inactive", "terminated"], nullable: true, description: "Employment status")
+                                ]
+                            ),
+                            new OA\Schema(
+                                title: "Provider2Schema",
+                                required: ["employee_number", "personal_info", "work_info"],
+                                properties: [
+                                    new OA\Property(property: "employee_number", type: "string", description: "Employee number"),
+                                    new OA\Property(
+                                        property: "personal_info",
+                                        type: "object",
+                                        required: ["given_name", "family_name", "email"],
+                                        properties: [
+                                            new OA\Property(property: "given_name", type: "string", description: "Given name"),
+                                            new OA\Property(property: "family_name", type: "string", description: "Family name"),
+                                            new OA\Property(property: "email", type: "string", format: "email", description: "Email"),
+                                            new OA\Property(property: "mobile", type: "string", nullable: true, description: "Mobile number")
+                                        ]
+                                    ),
+                                    new OA\Property(
+                                        property: "work_info",
+                                        type: "object",
+                                        properties: [
+                                            new OA\Property(property: "role", type: "string", nullable: true, description: "Job role"),
+                                            new OA\Property(property: "division", type: "string", nullable: true, description: "Division"),
+                                            new OA\Property(property: "start_date", type: "string", format: "date", nullable: true, description: "Start date"),
+                                            new OA\Property(property: "current_status", type: "string", enum: ["employed", "terminated", "on_leave"], nullable: true, description: "Current employment status")
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                )
+            ]
         ),
         responses: [
             new OA\Response(
@@ -294,6 +368,99 @@ class EmployeeController extends Controller
                 schema: new OA\Schema(type: "string", example: "EMP001")
             )
         ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            description: "Updated employee data - schema varies by provider. Must match the employee_id in the URL path.",
+            content: [
+                "application/json" => new OA\MediaType(
+                    mediaType: "application/json",
+                    examples: [
+                        "provider1" => new OA\Examples(
+                            example: "provider1",
+                            summary: "Provider 1 Update Schema",
+                            value: [
+                                "emp_id" => "EMP001",
+                                "first_name" => "John",
+                                "last_name" => "Doe",
+                                "email_address" => "john.doe.updated@example.com",
+                                "phone" => "+1-555-0199",
+                                "job_title" => "Senior Security Officer",
+                                "dept" => "Security Operations",
+                                "hire_date" => "2024-01-15",
+                                "employment_status" => "active"
+                            ]
+                        ),
+                        "provider2" => new OA\Examples(
+                            example: "provider2",
+                            summary: "Provider 2 Update Schema",
+                            value: [
+                                "employee_number" => "EMP2001",
+                                "personal_info" => [
+                                    "given_name" => "Jane",
+                                    "family_name" => "Smith",
+                                    "email" => "jane.smith.updated@example.com",
+                                    "mobile" => "+1-555-0299"
+                                ],
+                                "work_info" => [
+                                    "role" => "Lead Security Guard",
+                                    "division" => "Operations",
+                                    "start_date" => "2024-02-01",
+                                    "current_status" => "employed"
+                                ]
+                            ]
+                        )
+                    ],
+                    schema: new OA\Schema(
+                        type: "object",
+                        oneOf: [
+                            new OA\Schema(
+                                title: "Provider1UpdateSchema",
+                                required: ["emp_id", "first_name", "last_name", "email_address"],
+                                properties: [
+                                    new OA\Property(property: "emp_id", type: "string", description: "Employee ID (must match URL path)"),
+                                    new OA\Property(property: "first_name", type: "string", description: "First name"),
+                                    new OA\Property(property: "last_name", type: "string", description: "Last name"),
+                                    new OA\Property(property: "email_address", type: "string", format: "email", description: "Email address"),
+                                    new OA\Property(property: "phone", type: "string", nullable: true, description: "Phone number"),
+                                    new OA\Property(property: "job_title", type: "string", nullable: true, description: "Job title"),
+                                    new OA\Property(property: "dept", type: "string", nullable: true, description: "Department"),
+                                    new OA\Property(property: "hire_date", type: "string", format: "date", nullable: true, description: "Hire date"),
+                                    new OA\Property(property: "employment_status", type: "string", enum: ["active", "inactive", "terminated"], nullable: true, description: "Employment status")
+                                ]
+                            ),
+                            new OA\Schema(
+                                title: "Provider2UpdateSchema",
+                                required: ["employee_number", "personal_info", "work_info"],
+                                properties: [
+                                    new OA\Property(property: "employee_number", type: "string", description: "Employee number (must match URL path)"),
+                                    new OA\Property(
+                                        property: "personal_info",
+                                        type: "object",
+                                        required: ["given_name", "family_name", "email"],
+                                        properties: [
+                                            new OA\Property(property: "given_name", type: "string", description: "Given name"),
+                                            new OA\Property(property: "family_name", type: "string", description: "Family name"),
+                                            new OA\Property(property: "email", type: "string", format: "email", description: "Email"),
+                                            new OA\Property(property: "mobile", type: "string", nullable: true, description: "Mobile number")
+                                        ]
+                                    ),
+                                    new OA\Property(
+                                        property: "work_info",
+                                        type: "object",
+                                        properties: [
+                                            new OA\Property(property: "role", type: "string", nullable: true, description: "Job role"),
+                                            new OA\Property(property: "division", type: "string", nullable: true, description: "Division"),
+                                            new OA\Property(property: "start_date", type: "string", format: "date", nullable: true, description: "Start date"),
+                                            new OA\Property(property: "current_status", type: "string", enum: ["employed", "terminated", "on_leave"], nullable: true, description: "Current employment status")
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                )
+            ]
+        ),
         responses: [
             new OA\Response(
                 response: 200,
@@ -342,26 +509,7 @@ class EmployeeController extends Controller
                     ]
                 )
             )
-        ],
-        requestBody: new OA\RequestBody(
-            required: true,
-            description: "Employee information in the TrackTik employee schema",
-            content: new OA\JsonContent(
-                required: ["emp_id", "first_name", "last_name", "email_address", "phone", "job_title", "dept", "hire_date", "employment_status"],
-                properties: [
-                    new OA\Property(property: "emp_id", type: "string", example: "EMP001"),
-                    new OA\Property(property: "first_name", type: "string", example: "Alice"),
-                    new OA\Property(property: "last_name", type: "string", example: "Smith"),
-                    new OA\Property(property: "email_address", type: "string", format: "email", example: "alice.smith@example.com"),
-                    new OA\Property(property: "phone", type: "string", example: "+14255550101"),
-                    new OA\Property(property: "job_title", type: "string", example: "Security Officer"),
-                    new OA\Property(property: "dept", type: "string", example: "Operations"),
-                    new OA\Property(property: "hire_date", type: "string", format: "date", example: "2025-01-01"),
-                    new OA\Property(property: "employment_status", type: "string", enum: ["active", "inactive", "terminated"], example: "active")
-                ],
-                type: "object"
-            )
-        )
+        ]
     )]
     public function updateEmployeeById(Request $request, string $provider, string $employee_id): JsonResponse
     {

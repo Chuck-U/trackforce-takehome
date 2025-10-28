@@ -64,13 +64,6 @@ class AppServiceProvider extends ServiceProvider
             ->needs(StatusMapperInterface::class)
             ->give(Provider2StatusMapper::class);
 
-        $this->app->when(Provider1EmployeeController::class)
-            ->needs(StatusMapperInterface::class)
-            ->give(Provider1StatusMapper::class);
-
-        $this->app->when(Provider2EmployeeController::class)
-            ->needs(StatusMapperInterface::class)
-            ->give(Provider2StatusMapper::class);
     }
 
     /**
