@@ -9,6 +9,8 @@
 /resources/js/wayfinder
 /storage/*.key
 /storage/pail
+/storage/cache
+/storage/coverage
 /vendor
 .DS_Store
 .env
@@ -24,5 +26,6 @@ yarn-error.log
 /.fleet
 /.idea
 /.nova
-/.vscode
+# Keep .vscode for debugging configuration
+# /.vscode
 /.zed

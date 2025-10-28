@@ -1,0 +1,36 @@
+{
+    "php.validate.executablePath": "/usr/bin/php",
+    "php.suggest.basic": false,
+    "php.debug.port": [
+        9003
+    ],
+    "php.debug.ideKey": "VSCODE",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/vendor": true,
+        "**/node_modules": true,
+        "storage/framework": true,
+        "storage/logs": true,
+        "storage/coverage": true,
+        "storage/cache": true
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/vendor/**": true,
+        "**/storage/framework/**": true,
+        "**/storage/logs/**": true,
+        "**/storage/coverage/**": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/vendor": true,
+        "**/storage/framework": true,
+        "**/storage/logs": true,
+        "**/storage/coverage": true,
+        "**/.phpunit.cache": true
+    }
+}
+

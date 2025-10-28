@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\Provider1EmployeeController;
 use App\Http\Controllers\Api\Provider2EmployeeController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,15 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Provider 1 Endpoints
-// Note: Add ->middleware('provider.auth') to routes to enable OAuth token validation
-Route::prefix('provider1')->group(function () {
-    Route::post('/employees', [Provider1EmployeeController::class, 'store']);
-});
-
 // Provider 2 Endpoints
 // Note: Add ->middleware('provider.auth') to routes to enable OAuth token validation
-Route::prefix('provider2')->group(function () {
-    Route::post('/employees', [Provider2EmployeeController::class, 'store']);
+Route::prefix('provider2')->middleware(env('APP_ENV') === 'local' ? 'provider.auth' : null)->group(function () {
+    Route::post('/employees', [Provider2EmployeeController::class, 'store'])->middleware('check.escape');
 });
 

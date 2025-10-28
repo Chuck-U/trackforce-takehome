@@ -2,10 +2,11 @@
 
 use App\Domain\DataTransferObjects\Provider1EmployeeData;
 use App\Domain\DataTransferObjects\TrackTikEmployeeData;
+use App\Services\Mapping\Provider1StatusMapper;
 use App\Services\Provider1EmployeeMapper;
 
 test('maps Provider 1 employee data to TrackTik schema', function () {
-    $mapper = new Provider1EmployeeMapper();
+    $mapper = new Provider1EmployeeMapper(new Provider1StatusMapper());
 
     $providerData = Provider1EmployeeData::fromArray([
         'emp_id' => 'P1_001',
@@ -34,7 +35,7 @@ test('maps Provider 1 employee data to TrackTik schema', function () {
 });
 
 test('maps Provider 1 status values correctly', function () {
-    $mapper = new Provider1EmployeeMapper();
+    $mapper = new Provider1EmployeeMapper(new Provider1StatusMapper());
 
     $statusMappings = [
         'active' => 'active',
@@ -58,7 +59,7 @@ test('maps Provider 1 status values correctly', function () {
 });
 
 test('handles missing optional fields for Provider 1', function () {
-    $mapper = new Provider1EmployeeMapper();
+    $mapper = new Provider1EmployeeMapper(new Provider1StatusMapper());
 
     $providerData = Provider1EmployeeData::fromArray([
         'emp_id' => 'P1_MINIMAL',

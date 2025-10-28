@@ -13,6 +13,7 @@
         "php": "^8.2",
         "darkaonline/l5-swagger": "^9.0",
         "laravel/framework": "^12.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "zircote/swagger-php": "^5.5"
     },
@@ -51,7 +52,26 @@
         ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "@php artisan test --no-coverage"
+        ],
+        "test:coverage": [
+            "@php artisan config:clear --ansi",
+            "@putenv XDEBUG_MODE=coverage",
+            "@php artisan test --coverage"
+        ],
+        "test:coverage-html": [
+            "@php artisan config:clear --ansi",
+            "@putenv XDEBUG_MODE=coverage",
+            "@php artisan test --coverage --coverage-html=storage/coverage/html"
+        ],
+        "test:coverage-clover": [
+            "@php artisan config:clear --ansi",
+            "@putenv XDEBUG_MODE=coverage",
+            "@php artisan test --coverage --coverage-clover=storage/coverage/clover.xml"
+        ],
+        "coverage": [
+            "@test:coverage-html",
+            "@php -r \"echo '\\n\\033[32mCoverage report generated: storage/coverage/html/index.html\\033[0m\\n';\""
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

@@ -77,6 +77,45 @@ The Swagger UI provides:
 
 For more details, see `SWAGGER_API_DOCS.md`
 
+## Testing & Code Coverage
+
+### Running Tests
+
+```bash
+# Run all tests
+composer test
+
+# Run tests with coverage report
+composer test:coverage
+
+# Generate HTML coverage report
+composer coverage
+
+# View coverage report
+xdg-open storage/coverage/html/index.html  # Linux
+open storage/coverage/html/index.html       # macOS
+```
+
+### Code Coverage Reports
+
+The project is configured to generate comprehensive code coverage reports:
+- **HTML Report**: `storage/coverage/html/index.html` (interactive, detailed)
+- **Clover XML**: `storage/coverage/clover.xml` (for CI/CD)
+- **Text Report**: `storage/coverage/coverage.txt` (quick summary)
+
+### Debugging with Xdebug
+
+The project includes complete Xdebug setup for step debugging and profiling:
+
+1. **Install Xdebug**: See `XDEBUG_SETUP.md` for detailed instructions
+2. **VS Code Configuration**: Pre-configured in `.vscode/launch.json`
+3. **Debug Tests**: Use the "Debug Pest Tests" launch configuration
+4. **Debug API**: Use the "Listen for Xdebug" configuration
+
+For detailed setup and usage, see:
+- `XDEBUG_SETUP.md` - Complete Xdebug installation and configuration guide
+- `CODE_COVERAGE.md` - Comprehensive code coverage documentation
+
 ## Architecture Diagram
 
 ```

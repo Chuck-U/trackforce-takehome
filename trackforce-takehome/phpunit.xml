@@ -3,6 +3,7 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         cacheDirectory="storage/cache/phpunit"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -16,7 +17,25 @@
         <include>
             <directory>app</directory>
         </include>
+        <exclude>
+            <directory>app/Console</directory>
+            <directory>app/Exceptions</directory>
+            <file>app/Providers/AppServiceProvider.php</file>
+        </exclude>
     </source>
+    <coverage
+        includeUncoveredFiles="true"
+        pathCoverage="false"
+        ignoreDeprecatedCodeUnits="true"
+        disableCodeCoverageIgnore="false"
+    >
+        <report>
+            <html outputDirectory="storage/coverage/html" lowUpperBound="50" highLowerBound="80"/>
+            <clover outputFile="storage/coverage/clover.xml"/>
+            <text outputFile="storage/coverage/coverage.txt" showUncoveredFiles="true" showOnlySummary="false"/>
+            <xml outputDirectory="storage/coverage/xml"/>
+        </report>
+    </coverage>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

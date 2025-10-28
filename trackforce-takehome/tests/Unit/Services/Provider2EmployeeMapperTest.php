@@ -2,10 +2,11 @@
 
 use App\Domain\DataTransferObjects\Provider2EmployeeData;
 use App\Domain\DataTransferObjects\TrackTikEmployeeData;
+use App\Services\Mapping\Provider2StatusMapper;
 use App\Services\Provider2EmployeeMapper;
 
 test('maps Provider 2 employee data to TrackTik schema', function () {
-    $mapper = new Provider2EmployeeMapper();
+    $mapper = new Provider2EmployeeMapper(new Provider2StatusMapper());
 
     $providerData = Provider2EmployeeData::fromArray([
         'employee_number' => 'P2_001',
@@ -38,7 +39,7 @@ test('maps Provider 2 employee data to TrackTik schema', function () {
 });
 
 test('maps Provider 2 status values correctly', function () {
-    $mapper = new Provider2EmployeeMapper();
+    $mapper = new Provider2EmployeeMapper(new Provider2StatusMapper());
 
     $statusMappings = [
         'employed' => 'active',
@@ -66,7 +67,7 @@ test('maps Provider 2 status values correctly', function () {
 });
 
 test('handles missing optional fields for Provider 2', function () {
-    $mapper = new Provider2EmployeeMapper();
+    $mapper = new Provider2EmployeeMapper(new Provider2StatusMapper());
 
     $providerData = Provider2EmployeeData::fromArray([
         'employee_number' => 'P2_MINIMAL',
@@ -88,7 +89,7 @@ test('handles missing optional fields for Provider 2', function () {
 });
 
 test('handles missing nested objects for Provider 2', function () {
-    $mapper = new Provider2EmployeeMapper();
+    $mapper = new Provider2EmployeeMapper(new Provider2StatusMapper());
 
     $providerData = Provider2EmployeeData::fromArray([
         'employee_number' => 'P2_MINIMAL2',
