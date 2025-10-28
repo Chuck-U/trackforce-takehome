@@ -13,15 +13,15 @@ class CheckEscapeCharacters
      * Common escape characters to check for.
      */
     private const ESCAPE_CHARACTERS = [
-        '\\',   // Backslash
-        '\n',   // Newline
-        '\r',   // Carriage return
-        '\t',   // Tab
-        '\0',   // Null byte
-        '\x1b', // Escape
-        '\b',   // Backspace
-        '\f',   // Form feed
-        '\v',   // Vertical tab
+        '\\',   
+        '\n',   
+        '\r',   
+        '\t',   
+        '\0',   
+        '\x1b', 
+        '\b',   
+        '\f',   
+        '\v',   
     ];
 
     /**

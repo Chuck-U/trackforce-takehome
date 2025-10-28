@@ -56,17 +56,14 @@
         ],
         "test:coverage": [
             "@php artisan config:clear --ansi",
-            "@putenv XDEBUG_MODE=coverage",
             "@php artisan test --coverage"
         ],
         "test:coverage-html": [
             "@php artisan config:clear --ansi",
-            "@putenv XDEBUG_MODE=coverage",
             "@php artisan test --coverage --coverage-html=storage/coverage/html"
         ],
         "test:coverage-clover": [
             "@php artisan config:clear --ansi",
-            "@putenv XDEBUG_MODE=coverage",
             "@php artisan test --coverage --coverage-clover=storage/coverage/clover.xml"
         ],
         "coverage": [
